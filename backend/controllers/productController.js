@@ -1,21 +1,39 @@
 import productModel from "../models/productModel.js";
+import {v2 as cloudinary} from 'cloudinary'
 const addProduct = async (req, res) => {
     console.log("Product Created");
     try {
-        const { name, description, price, imageUrl, category, subCategory, sizes } =
+        const { name, description, price, bestSeller, category, subCategory, sizes } =
         req.body;
+        const image=req.files.image && req.files.image[0];   
+       
+        
+         
+        let imageUrl = await Promise.all([
+            (async () => {
+                let result = await cloudinary.uploader.upload(image.path, { resource_type: 'image' });
+                return result.secure_url;
+            })()
+        ]);
         const newProduct = new productModel({
         name,
         description,
         price,
-        imageUrl,
+        bestSeller,
         category,
         subCategory,
-        sizes,
+        sizes:JSON.parse(sizes),
+        image:imageUrl,
+        Date:Date.now(),
         });
+        
         await newProduct.save();
         res.status(201).json("Product Created Successfully");
+
+        
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json(error);
     }
 }
@@ -29,7 +47,8 @@ const getAllProducts = async (req, res) => {
 }
 const deleteProduct = async (req, res) => {
     try {
-        const product = await productModel.findByIdAndDelete(req.params.id);
+        const product = await productModel.findByIdAndDelete(req.body.id);
+        
         if (!product) {
             res.status(404).json("Product Not Found");
         } else {
@@ -39,8 +58,16 @@ const deleteProduct = async (req, res) => {
         res.status(500).json(error);
     }
 }
-const singleProduct=(req,res)=>
+const singleProduct=async(req,res)=>
 {
-    
+    try {
+        
+        const singleData=await productModel.findById(req.body.id);
+        res.status(201).json(singleData);
+    } catch (error) {
+        console.log(error);
+        
+        res.status(500).json(error);
+    }
 }
 export { addProduct, getAllProducts,singleProduct,deleteProduct }

@@ -3,6 +3,9 @@ import userModel from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
 import createToken from "../utils/jwtToken.js";
+import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
+dotenv.config();
 const loginUser=async(req,res)=>
 {
     const {email,password}=req.body;
@@ -55,7 +58,7 @@ const registerUser=async(req,res)=>
             const hashPassword=await bcrypt.hash(password,salt);
             const newUser=new userModel({name,email,password:hashPassword});
             await newUser.save();
-            createToken(newUser._id);
+            createToken(res,newUser._id);
             return  res.status(201).json("User Registered Successfully");
         }
     } catch (error) {
@@ -65,6 +68,36 @@ const registerUser=async(req,res)=>
 }
 const adminLogin=async(req,res)=>
 {
-
+    try {
+        
+        const {email,password}=req.body;
+        if(email===process.env.ADMIN_EMAIL && password===process.env.ADMIN_PASSWORD)
+        {
+            const token=jwt.sign(email+password,process.env.JWT_SECRET);
+            res.status(201).json(token);
+        }
+        else
+        {
+            res.status(400).json({message:"User Is Not An Admin"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.satus(501).json({message:"Internal Server Error"});
+    }
 }
-export {loginUser,registerUser,adminLogin} 
+const logoutUser=async(req,res)=>
+{
+    try {
+        res.cookie("jwt", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "Strict",
+            expires: new Date(0), // Expire immediately
+          });
+          res.json({ message: "Logout successful" });
+    } catch (error) {
+        console.log(error);
+        res.status(501).json({message:"Internal Server Error"});
+    }
+}
+export {loginUser,registerUser,adminLogin,logoutUser} 

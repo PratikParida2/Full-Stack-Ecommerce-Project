@@ -9,7 +9,7 @@ import productRouter from './routes/productRoute.js'
 
 //Configuration
 const app=express();
-const port=dotend.config().PORT||3000;
+const port=dotend.config().PORT||5000;
 connectDB();
 connectCloudinary();
 

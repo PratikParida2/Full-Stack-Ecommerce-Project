@@ -35,9 +35,9 @@ const Sidebar = () => {
           <Link to="/add" onClick={() => setIsOpen(false)} className="hover:text-gray-300">
             ➕ Add Product
           </Link>
-          <Link to="/remove" onClick={() => setIsOpen(false)} className="hover:text-gray-300">
-            ❌ Remove Product
-          </Link>
+          <Link to="/orders" onClick={() => setIsOpen(false)} className="hover:text-gray-300">
+            📦 Orders
+        </Link>
           <Link to="/list" onClick={() => setIsOpen(false)} className="hover:text-gray-300">
             📦 View Products
           </Link>

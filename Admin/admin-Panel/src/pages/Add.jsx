@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { products } from '../assets/frontend_assets/assets';
+
 const Add = () => {
   const [product, setProduct] = useState({
-    name: '',
-    description: '',
-    price: '',
-    image: [],
-    category: '',
-    subCategory: '',
-    sizes: [],
-    bestseller: false,
+        _id: "",
+        name: "",
+        description: "Just For Trial",
+        price: 350,
+        image: [],
+        category: "Men",
+        subCategory: "Winterwear",
+        sizes: ["S", "M", "L", "XL"],
+        date: 1716668445448,
+        bestseller: false
   });
 
   const handleInputChange = (e) => {
@@ -34,9 +37,18 @@ const Add = () => {
     console.log(product);
     // Submit to backend logic here
   };
-  products.push(product);
-  console.log(product);
-  
+  console.log(products);
+  useEffect(()=>{
+    console.log(product);
+    product._id = products.length + 1;
+    product.date = Date.now();
+    // product.image = Array.from(product.image).map((file) => URL.createObjectURL(file));
+    product.sizes = product.sizes.filter((size) => size !== "");
+    product.bestseller = product.bestseller || false;
+    products.push(product);
+    console.log(products);
+    
+  },[])
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded-md mt-10">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Product</h2>
@@ -102,8 +114,8 @@ const Add = () => {
           >
             <option value="">Select Subcategory</option>
             <option value="Winterwear">Winterwear</option>
-            <option value="Casual">Casual</option>
-            <option value="Formal">Formal</option>
+            <option value="Casual">Top-Wear</option>
+            <option value="Formal">Bottom-Wear</option>
           </select>
         </div>
 

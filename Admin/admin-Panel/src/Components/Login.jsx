@@ -1,16 +1,35 @@
 import React, { useState } from "react";
-
+import axios from "axios";
+import { useContext ,useEffect} from "react";
+import { storeContext } from "../Context/Context.jsx";
+import { toast } from "react-toastify";
 const Login = () => {
     const[email,setEmail]=useState("");
     const[password,setPassword]=useState("");
-    const onSubmitHandler=(e)=>
+    const {token,setToken}=useContext(storeContext);
+    
+    const onSubmitHandler=async(e)=>
     {
         try {
             e.preventDefault();
             setEmail(e.target.email.value);
             setPassword(e.target.password.value);
-        } catch (error) {
+            const response=await axios.post("http://localhost:5000/api/user/admin",{
+                email:e.target.email.value,
+                password:e.target.password.value
+            });
+            if(response.data && response.status===201)
+            {
+              setToken(response.data);
+            }
+            else
+            {
+              toast.error("Invalid credentials");
+            }
             
+        } catch (error) {
+          toast.error("Invalid credentials");
+          console.error("Error:", error.response?.data || error.message);
         }
     }
     console.log(email);

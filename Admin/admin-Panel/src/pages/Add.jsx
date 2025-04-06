@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { products } from '../assets/frontend_assets/assets';
-
+import uploadImage from '../assets/admin_assets/upload_area.png'
 const Add = () => {
   const [product, setProduct] = useState({
         _id: "",
@@ -38,17 +38,6 @@ const Add = () => {
     // Submit to backend logic here
   };
   console.log(products);
-  useEffect(()=>{
-    console.log(product);
-    product._id = products.length + 1;
-    product.date = Date.now();
-    // product.image = Array.from(product.image).map((file) => URL.createObjectURL(file));
-    product.sizes = product.sizes.filter((size) => size !== "");
-    product.bestseller = product.bestseller || false;
-    products.push(product);
-    console.log(products);
-    
-  },[])
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded-md mt-10">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Product</h2>
@@ -82,7 +71,8 @@ const Add = () => {
           onChange={handleInputChange}
           required
         />
-
+        <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded p-4 cursor-pointer">
+        <img src={!product.image[0]?uploadImage:URL.createObjectURL(product.image[0])}  className='w-20' alt="Upload Image" />
         <input
           type="file"
           name="image"
@@ -91,6 +81,8 @@ const Add = () => {
           onChange={handleImageChange}
           className="w-full"
         />
+        </label>
+        
 
         <div className="flex gap-4">
           <select

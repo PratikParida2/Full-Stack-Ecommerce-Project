@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { products } from '../assets/frontend_assets/assets';
 import uploadImage from '../assets/admin_assets/upload_area.png'
+import axios from 'axios';
+import { toast } from 'react-toastify';
 const Add = () => {
+  const [token,setToken]=useState(localStorage.getItem("token") || "");
   const [product, setProduct] = useState({
         _id: "",
         name: "",
@@ -32,12 +35,49 @@ const Add = () => {
     setProduct({ ...product, sizes: newSizes });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(product);
-    // Submit to backend logic here
+    
+    const formData = new FormData();
+    formData.append('name', product.name);
+    formData.append('description', product.description);
+    formData.append('price', product.price);
+    formData.append('category', product.category);
+    formData.append('subCategory', product.subCategory);
+    formData.append('bestseller', product.bestseller);
+    formData.append('sizes', JSON.stringify(product.sizes)); // Convert array to string
+    product.image.forEach((file) =>  formData.append('image', file)); // Append each image file
+  
+    try {
+      const response = await axios.post('http://localhost:5000/api/product/add', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+       if(response.status===201){
+        toast.success("Product Added Successfully");
+        setProduct({
+          _id: "",
+          name: "",
+          description: "Just For Trial",
+          price: 350,
+          image: [],
+          category: "Men",
+          subCategory: "Winterwear",
+          sizes: ["S", "M", "L", "XL"],
+          date: 1716668445448,
+          bestseller: false
+        });
+       }
+       else{
+        toast.error(response.data.message);
+       }
+    } catch (error) {
+      console.error('Error:', error.response?.data || error.message);
+      toast.error(error.message);
+    }
   };
-  console.log(products);
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded-md mt-10">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Product</h2>
@@ -80,6 +120,7 @@ const Add = () => {
           multiple
           onChange={handleImageChange}
           className="w-full"
+          required
         />
         </label>
         
@@ -137,7 +178,7 @@ const Add = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full cursor-pointer"
         >
           Add Product
         </button>

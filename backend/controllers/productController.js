@@ -1,7 +1,6 @@
 import productModel from "../models/productModel.js";
 import {v2 as cloudinary} from 'cloudinary'
 const addProduct = async (req, res) => {
-    console.log("Product Created");
     try {
         const { name, description, price, bestSeller, category, subCategory, sizes } =
         req.body;
@@ -48,7 +47,7 @@ const getAllProducts = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const product = await productModel.findByIdAndDelete(req.body.id);
-        
+        console.log(product);
         if (!product) {
             res.status(404).json("Product Not Found");
         } else {

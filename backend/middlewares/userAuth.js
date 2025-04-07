@@ -4,7 +4,7 @@ dotenv.config();
 import userModel from '../models/userModel.js';
 const userAuth=async(req,res,next)=>{
     try {
-        console.log(req.headers.cookie);
+        // console.log(req.headers.cookie);
         const cookies = req.headers.cookie
         ?.split(';')
         .reduce((acc, cookie) => {
@@ -14,7 +14,7 @@ const userAuth=async(req,res,next)=>{
         }, {});
   
       const token = cookies?.jwt;
-        console.log("token "+token);
+        // console.log("token "+token);
         
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized' });

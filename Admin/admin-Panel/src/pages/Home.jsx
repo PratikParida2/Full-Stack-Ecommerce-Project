@@ -1,6 +1,35 @@
 import React from "react";
 import { Link,NavLink } from "react-router-dom";
+import axios from "axios";
+import { useState,useEffect } from "react";
 const Home = () => {
+  const[totalUsers,setTotalUsers]=useState(0);
+  const getTotalUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/user/getusers", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      return response.data.users; // Return total count
+    } catch (error) {
+      console.error("Error fetching total users:", error.message);
+      return null;
+    }
+  };
+  
+  // Call it inside another async function
+  useEffect(()=>{
+    const fetchTotalUsers = async () => {
+      const total = await getTotalUsers();
+      if (total !== null) {
+        setTotalUsers(total);
+      }
+    };
+    fetchTotalUsers();
+  },[]);
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
@@ -12,7 +41,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white p-4 rounded-2xl shadow-sm">
             <h2 className="text-xl font-semibold text-gray-700">Total Users</h2>
-            <p className="text-2xl font-bold text-blue-600 mt-2">123</p>
+            <p className="text-2xl font-bold text-blue-600 mt-2">{totalUsers}</p>
           </div>
           <div className="bg-white p-4 rounded-2xl shadow-sm">
             <h2 className="text-xl font-semibold text-gray-700">Orders</h2>

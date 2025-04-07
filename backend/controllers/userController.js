@@ -100,4 +100,14 @@ const logoutUser=async(req,res)=>
         res.status(501).json({message:"Internal Server Error"});
     }
 }
-export {loginUser,registerUser,adminLogin,logoutUser} 
+const getAllUsers=async(req,res)=>{
+    try {
+        const users=await userModel.countDocuments();
+        res.status(200).json({users});
+    } catch (error) {
+        console.log(error);
+        res.status(501).json({message:"Internal Server Error"});
+    }
+
+}
+export {loginUser,registerUser,adminLogin,logoutUser,getAllUsers} 

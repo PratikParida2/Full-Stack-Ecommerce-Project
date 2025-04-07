@@ -7,11 +7,13 @@ import connectCloudinary from './config/Cloudinary.js'
 import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
 
+
 //Configuration
 const app=express();
 const port=dotend.config().PORT||5000;
 connectDB();
 connectCloudinary();
+
 
 //middleware
 app.use(express.json());

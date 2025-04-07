@@ -15,7 +15,7 @@ const Add = () => {
         subCategory: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716668445448,
-        bestseller: false
+        bestseller: false,
   });
 
   const handleInputChange = (e) => {
@@ -34,7 +34,7 @@ const Add = () => {
       : [...product.sizes, size];
     setProduct({ ...product, sizes: newSizes });
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -44,7 +44,10 @@ const Add = () => {
     formData.append('price', product.price);
     formData.append('category', product.category);
     formData.append('subCategory', product.subCategory);
-    formData.append('bestseller', product.bestseller);
+    console.log(product.bestseller);
+    
+    formData.append('bestseller',product.bestseller);
+    
     formData.append('sizes', JSON.stringify(product.sizes)); // Convert array to string
     product.image.forEach((file) =>  formData.append('image', file)); // Append each image file
   
@@ -136,6 +139,7 @@ const Add = () => {
             <option value="">Select Category</option>
             <option value="Men">Men</option>
             <option value="Women">Women</option>
+            <option value="Kids">Kids</option>
           </select>
 
           <select
@@ -147,8 +151,8 @@ const Add = () => {
           >
             <option value="">Select Subcategory</option>
             <option value="Winterwear">Winterwear</option>
-            <option value="Casual">Top-Wear</option>
-            <option value="Formal">Bottom-Wear</option>
+            <option value="Bottomwear">Top-Wear</option>
+            <option value="Topwear">Bottom-Wear</option>
           </select>
         </div>
 
@@ -169,9 +173,7 @@ const Add = () => {
           <input
             type="checkbox"
             checked={product.bestseller}
-            onChange={(e) =>
-              setProduct({ ...product, bestseller: e.target.checked })
-            }
+            onChange={(e) =>setProduct({ ...product, bestseller: e.target.checked })}
           />
           Bestseller
         </label>

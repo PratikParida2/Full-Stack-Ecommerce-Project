@@ -16,8 +16,8 @@ const loginUser=async(req,res)=>
         const isPassword=await bcrypt.compare(password,existingUser.password);
         if(isPassword)
         {
-            createToken(res,existingUser._id);
-            res.status(201).json({message:"Login Succesfully"});
+            const token=createToken(res,existingUser._id);
+           return  res.status(201).json({message:"Login Succesfully", token});
         }
         else
         {
@@ -58,8 +58,8 @@ const registerUser=async(req,res)=>
             const hashPassword=await bcrypt.hash(password,salt);
             const newUser=new userModel({name,email,password:hashPassword});
             await newUser.save();
-            createToken(res,newUser._id);
-            return  res.status(201).json("User Registered Successfully");
+            const token=createToken(res,newUser._id);
+            return  res.status(201).json({message:"User Created Successfully"});
         }
     } catch (error) {
         console.log(error);
